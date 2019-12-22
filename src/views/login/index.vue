@@ -1,10 +1,11 @@
 <template>
-  <div class="login">
-      <el-card class="login-card">
-        <div class="title">
-          <img src="../../assets/logo_index.png" alt="">
-        </div>
-        <el-form ref="myForm" style="margin-top:30px" :model="loginForm" :rules="loginRules">
+   <div class='login'>
+
+     <el-card class='login-card'>
+       <div class='title'>
+         <img src="../.././assets/img/logo_index.png" alt="">
+       </div>
+       <el-form ref="myForm" style="margin-top:30px" :model="loginForm" :rules="loginRules">
 
          <el-form-item prop="mobile">
 
@@ -19,18 +20,17 @@
            <el-checkbox v-model="loginForm.check">我已阅读并同意用户协议和隐私条款</el-checkbox>
          </el-form-item>
          <el-form-item>
+
            <el-button @click="submitLogin" type="primary" style="width:100%">登录</el-button>
          </el-form-item>
        </el-form>
-        <el-form>
-
-        </el-form>
-      </el-card>
+     </el-card>
   </div>
 </template>
 
 <script>
 export default {
+
   data () {
     return {
 
@@ -40,7 +40,6 @@ export default {
         check: false
       },
       loginRules: {
-
         mobile: [{ required: true, message: '请输入您的手机号' }, {
           pattern: /^1[3456789]\d{9}$/, message: '手机号格式不正确'
         }],
@@ -53,7 +52,7 @@ export default {
           if (value) {
             callback()
           } else {
-            callback(new Error('您必须无条件同意被我们坑'))
+            callback(new Error('您必须无条件同意'))
           }
         } }]
       }
@@ -62,9 +61,24 @@ export default {
   methods: {
 
     submitLogin () {
-      this.$refs.myForm.validate(function (isOK) {
+      this.$refs.myForm.validate((isOK) => {
         if (isOK) {
-          console.log('前端校验成功,发送用户名和密码到后台去校验')
+          console.log('前端校验成功')
+
+          this.$axios({
+            url: '/authorizations',
+            method: 'post',
+            data: this.loginForm
+          }).then(result => {
+            // window.localStorage.setItem('user-token', result.data.data.token)
+            window.localStorage.setItem('user-token', result.data.token)
+            this.$router.push('/home')
+          // }).catch(() => {
+          //   this.$message({
+          //     message: '您的手机号或者验证码不正确',
+          //     type: 'warning'
+          //   })
+          })
         }
       })
     }
@@ -73,24 +87,23 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less" scoped>
 .login {
-  background-image: url('../../assets/login_bg.jpg');
-  background-size:cover;
-  height:100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.login-card{
-  width: 440px;
-  height: 350px;
-}
-.title{
-  text-align: center;
-}
-img {
-  height: 44px;
-}
-
+    background-image: url('../../assets/img/login_bg.jpg');
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .login-card {
+      width: 440px;
+      height: 350px;
+      .title {
+        text-align: center;
+        img {
+          height: 44px;
+        }
+      }
+    }
+  }
 </style>
