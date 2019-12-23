@@ -25,6 +25,16 @@
             </el-row>
           </el-card>
         </div>
+        <el-row type="flex" justify="center" style="height:80px" align="middle">
+          <el-pagination
+            background
+            layout="prev, pager, next"
+            :total="page.total"
+            :current-page="page.currentPage"
+            :page-size="page.pageSize"
+            @current-change="changePage"
+          ></el-pagination>
+        </el-row>
       </el-tab-pane>
       <el-tab-pane label="收藏素材" name="collect">
         <div class="img-list">
@@ -39,9 +49,19 @@
             >
               <i class="el-icon-star-on"></i>
               <i class="el-icon-delete-solid"></i>
-            </el-row> -->
+            </el-row>-->
           </el-card>
         </div>
+        <el-row type="flex" justify="center" style="height:80px" align="middle">
+          <el-pagination
+            background
+            layout="prev, pager, next"
+            :total="page.total"
+            :current-page="page.currentPage"
+            :page-size="page.pageSize"
+            @current-change="changePage"
+          ></el-pagination>
+        </el-row>
       </el-tab-pane>
     </el-tabs>
     <!-- <button @click="test">测试</button> -->
@@ -53,11 +73,21 @@ export default {
   data () {
     return {
       activeName: 'all',
-      list: []
+      list: [],
+      page: {
+        currentPage: 1,
+        pageSize: 8,
+        total: 0
+      }
     }
   },
   methods: {
-    changeTab () {
+    changePage (newPage) {
+      this.page.currentPage = newPage
+      this.getAllMaterial()
+    },
+    changeTab (newPage) {
+      this.page.currentPage = 1
       this.getAllMaterial()
     },
     // test () {
@@ -68,10 +98,10 @@ export default {
       this.$axios({
         url: '/user/images',
         // params: { collect: false }
-        params: { collect: this.activeName === 'collect' }
-
+        params: { collect: this.activeName === 'collect', page: this.page.currentPage, per_page: this.page.pageSize }
       }).then(result => {
         this.list = result.data.results
+        this.page.total = result.data.total_count
       })
     }
   },
