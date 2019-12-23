@@ -1,19 +1,50 @@
 <template>
   <el-card>
-      <!-- 基本的页面结构 -->
-      <bread-crumb slot="header">
+    <!-- 基本的页面结构 -->
+    <bread-crumb slot="header">
       <template slot="title">素材管理</template>
       <!-- slot指向title -->
-      </bread-crumb>
-      <!-- 素材 -->
-      <el-tabs v-model="activeName">
-          <el-tab-pane label="全部素材" name="all">
-              <!-- 全部素材内容 -->
-
-          </el-tab-pane>
-          <el-tab-pane label="收藏素材" name="collect"></el-tab-pane>
-      </el-tabs>
-      <!-- <button @click="test">测试</button> -->
+    </bread-crumb>
+    <!-- 素材 -->
+    <el-tabs v-model="activeName" @tab-click="changeTab">
+      <el-tab-pane label="全部素材" name="all">
+        <!-- 全部素材内容{{list}} -->
+        <!-- div存放所有的列表的容器 -->
+        <div class="img-list">
+          <el-card class="img-card" v-for="item in list" :key="item.id">
+            <img :src="item.url" alt />
+            <el-row
+              class="operate"
+              type="flex"
+              align="middle"
+              justify="space-around"
+              style="font-size:20px"
+            >
+              <i class="el-icon-star-on"></i>
+              <i class="el-icon-delete-solid"></i>
+            </el-row>
+          </el-card>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="收藏素材" name="collect">
+        <div class="img-list">
+          <el-card class="img-card" v-for="item in list" :key="item.id">
+            <img :src="item.url" alt />
+            <!-- <el-row
+              class="operate"
+              type="flex"
+              align="middle"
+              justify="space-around"
+              style="font-size:20px"
+            >
+              <i class="el-icon-star-on"></i>
+              <i class="el-icon-delete-solid"></i>
+            </el-row> -->
+          </el-card>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+    <!-- <button @click="test">测试</button> -->
   </el-card>
 </template>
 
@@ -21,19 +52,57 @@
 export default {
   data () {
     return {
-      activeName: 'collect'
+      activeName: 'all',
+      list: []
     }
   },
   methods: {
+    changeTab () {
+      this.getAllMaterial()
+    },
     // test () {
     //   this.activeName = 'all'
     // }
+    // 获取所有素材
+    getAllMaterial () {
+      this.$axios({
+        url: '/user/images',
+        // params: { collect: false }
+        params: { collect: this.activeName === 'collect' }
 
+      }).then(result => {
+        this.list = result.data.results
+      })
+    }
+  },
+  created () {
+    this.getAllMaterial()
   }
-
 }
 </script>
 
-<style>
-
+<style lang='less' scoped>
+.img-list {
+  display: flex;
+  flex-wrap: wrap;
+  .img-card {
+    width: 180px;
+    height: 240px;
+    margin: 20px 30px;
+    position: relative;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+    .operate {
+      width: 100%;
+      font-size: 20px;
+      position: absolute;
+      bottom: 0;
+      background-color: #ccc;
+      height: 30px;
+      margin-left: -20px;
+    }
+  }
+}
 </style>
