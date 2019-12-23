@@ -10,7 +10,7 @@ export default {
 
 <style lang="less" scoped>
 .home {
-  background-image: url('../../assets/img/logo_index.png');
+  background-image: url('../../assets/img/jie.jpg');
   height: 100vh;
   background-size: cover;
 }

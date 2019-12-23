@@ -2,6 +2,7 @@
 import axios from 'axios'
 import router from '../router'
 import { Message } from 'element-ui'
+import JSONBig from 'json-bigint'
 // 请求拦截器
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0' // 赋值黑马头条的默认地址
 // 请求拦截
@@ -14,7 +15,9 @@ axios.interceptors.request.use(function (config) {
 }, function () {
   // 执行请求失败
 })
-
+axios.defaults.transformResponse = [function (data) {
+  return JSONBig.parse(data)
+}]
 axios.interceptors.response.use(function (response) {
   // 成功时执行
   return response.data ? response.data : {} // 解决当data不存在时  then中读取数据报错问题
@@ -24,7 +27,7 @@ axios.interceptors.response.use(function (response) {
   let message = ''
   switch (status) {
     case 400:
-      message = '手机号或者验证码错误'
+      message = '请求参数错误'
       break
     case 401:
       router.push('/login')
@@ -39,5 +42,7 @@ axios.interceptors.response.use(function (response) {
       break
   }
   Message({ type: 'warning', message })
+  // 让错误拦截的内容继续进入到以后的catch中  而不进入then
+  return Promise.reject(error)
 })
 export default axios
