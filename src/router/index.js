@@ -30,6 +30,9 @@ const routes = [
       component: Common
       // 按需加载后面是一个回调函数  按需加载里面是地址
 
+    }, {
+      path: 'material', // 素材列表
+      component: () => import('../views/material')
     }]
   },
   {
