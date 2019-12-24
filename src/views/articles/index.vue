@@ -50,8 +50,8 @@
     </el-row>
     <!-- 循环模板 -->
     <el-row
-      v-for="item in 100"
-      :key="item"
+      v-for="item in list"
+      :key="item.id.toString()"
       class="article-item"
       type="flex"
       justify="space-between"
@@ -59,18 +59,26 @@
       <!-- 左侧 -->
       <el-col :span="14">
         <el-row type="flex">
-          <img src="../../assets/img/jie.jpg" alt />
+          <!-- <img src="../../assets/img/jie.jpg" alt /> -->
+          <img :src="item.cover.images.length?item.cover.images[0]:defaultImg" alt />
           <div class="info">
-            <span>年少轻狂，一路前行</span>
-            <el-tag class="tag">标签一</el-tag>
-            <span class="date">2019-12-24 16:29:42</span>
+            <!-- <span>年少轻狂，一路前行</span> -->
+            <span>{{item.title}}</span>
+            <!-- <el-tag class="tag">标签一</el-tag> -->
+            <el-tag :type="item.status|filterType" class="tag">{{item.status|filterStatus}}</el-tag>
+            <!-- <span class="date">2019-12-24 16:29:42</span> -->
+            <span class="date">{{item.pubdate}}</span>
           </div>
         </el-row>
       </el-col>
       <el-col :span="6">
         <el-row class="right" type="flex" justify="end">
-          <span><i class="el-icon-edit"></i>修改</span>
-          <span><i class="el-icon-delete"></i>删除</span>
+          <span>
+            <i class="el-icon-edit"></i>修改
+          </span>
+          <span>
+            <i class="el-icon-delete"></i>删除
+          </span>
         </el-row>
       </el-col>
     </el-row>
@@ -86,7 +94,40 @@ export default {
         channel_id: null, // 默认为空
         dateRange: [] // 日期范围
       },
-      channels: [] // 定义一个channels接收频道
+      channels: [], // 定义一个channels接收频道
+      list: [],
+      defaultImg: require('../../assets/img/jie.jpg')
+    }
+  },
+  filters: {
+    filterStatus (value) {
+      // value是过滤器前面表达式计算的值
+      switch (value) {
+        case 0:
+          return '草稿'
+        case 1:
+          return '待审核'
+        case 2:
+          return '已发表'
+        case 3:
+          return '审核失败'
+        default:
+          break
+      }
+    },
+    filterType (value) {
+      switch (value) {
+        case 0:
+          return 'warning'
+        case 1:
+          return 'info'
+        case 2:
+          return ''
+        case 3:
+          return 'danger'
+        default:
+          break
+      }
     }
   },
   methods: {
@@ -96,10 +137,20 @@ export default {
       }).then(result => {
         this.channels = result.data.channels
       })
+    },
+    getArticles () {
+      this.$axios({
+        url: '/articles'
+      }).then(result => {
+        this.list = result.data.results
+      })
     }
+
   },
   created () {
     this.getChannels() // 调用获取频道数据
+
+    this.getArticles() // 调用获取文章列表
   }
 }
 </script>
@@ -139,14 +190,12 @@ export default {
       font-size: 12px;
     }
   }
-  .right{
-    span{
+  .right {
+    span {
       margin-left: 8px;
       font-size: 14px;
-      cursor: pointer;  //设置鼠标的样式为手指
-
+      cursor: pointer; //设置鼠标的样式为手指
     }
-
   }
 }
 </style>
