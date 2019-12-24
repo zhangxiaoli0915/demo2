@@ -44,6 +44,36 @@
         ></el-date-picker>
       </el-col>
     </el-row>
+    <!-- 主体部分 -->
+    <el-row class="total">
+      <span>共找到1000条符合条件的内容</span>
+    </el-row>
+    <!-- 循环模板 -->
+    <el-row
+      v-for="item in 100"
+      :key="item"
+      class="article-item"
+      type="flex"
+      justify="space-between"
+    >
+      <!-- 左侧 -->
+      <el-col :span="14">
+        <el-row type="flex">
+          <img src="../../assets/img/jie.jpg" alt />
+          <div class="info">
+            <span>年少轻狂，一路前行</span>
+            <el-tag class="tag">标签一</el-tag>
+            <span class="date">2019-12-24 16:29:42</span>
+          </div>
+        </el-row>
+      </el-col>
+      <el-col :span="6">
+        <el-row class="right" type="flex" justify="end">
+          <span><i class="el-icon-edit"></i>修改</span>
+          <span><i class="el-icon-delete"></i>删除</span>
+        </el-row>
+      </el-col>
+    </el-row>
   </el-card>
 </template>
 
@@ -71,7 +101,6 @@ export default {
   created () {
     this.getChannels() // 调用获取频道数据
   }
-
 }
 </script>
 
@@ -80,6 +109,44 @@ export default {
   .searchTool {
     height: 60px;
     padding-left: 50px;
+  }
+}
+.total {
+  margin: 60px 0;
+  height: 30px;
+  border-bottom: 1px dashed #ccc;
+}
+.article-item {
+  margin: 20px 0;
+  padding: 10px 0;
+  border-bottom: 1px solid #f2f3f5;
+  img {
+    width: 180px;
+    height: 100px;
+    margin-right: 10px;
+    border-radius: 5px;
+  }
+  .info {
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .tag {
+      max-width: 60px;
+    }
+    .date {
+      color: #999;
+      font-size: 12px;
+    }
+  }
+  .right{
+    span{
+      margin-left: 8px;
+      font-size: 14px;
+      cursor: pointer;  //设置鼠标的样式为手指
+
+    }
+
   }
 }
 </style>
