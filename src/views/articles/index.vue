@@ -9,7 +9,7 @@
       </el-col>
       <!-- 用一个单选框组 -->
       <el-col :span="18">
-        <el-radio-group v-model="formData.channel_id">
+        <el-radio-group @change="changeCondition" v-model="formData.status">
           <el-radio :label="5">全部</el-radio>
           <el-radio :label="0">草稿</el-radio>
           <el-radio :label="1">待审核</el-radio>
@@ -25,7 +25,7 @@
       <el-col :span="18">
         <!-- label指el-option显示值 -->
         <!-- value值el-option的存储值 -->
-        <el-select v-model="formData.channel_id">
+        <el-select @change="changeCondition" v-model="formData.channel_id">
           <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-col>
@@ -36,6 +36,9 @@
       </el-col>
       <el-col :span="18">
         <el-date-picker
+         @change="changeCondition"
+         value-format="yyyy-MM-dd"
+
           v-model="formData.dateRange"
           type="daterange"
           range-separator="-"
@@ -46,7 +49,7 @@
     </el-row>
     <!-- 主体部分 -->
     <el-row class="total">
-      <span>共找到1000条符合条件的内容</span>
+      <span>共找到100条符合条件的内容</span>
     </el-row>
     <!-- 循环模板 -->
     <el-row
@@ -131,16 +134,27 @@ export default {
     }
   },
   methods: {
+    changeCondition () {
+      let params = {
+        status: this.formData.status === 5 ? null : this.formData.status,
+        channel_id: this.formData.channel_id,
+        begin_pubdate: this.formData.dateRange.length ? this.formData.dateRange[0] : null,
+        end_pubdate: this.formData.dateRange.length > 1 ? this.formData.dateRange[1] : null
+      }
+      this.getArticles(params)
+    },
     getChannels () {
       this.$axios({
         url: '/channels'
       }).then(result => {
-        this.channels = result.data.channels
+        console.log(result)
+        this.formData.channels = result.data.channels
       })
     },
-    getArticles () {
+    getArticles (params) {
       this.$axios({
-        url: '/articles'
+        url: '/articles',
+        params
       }).then(result => {
         this.list = result.data.results
       })
