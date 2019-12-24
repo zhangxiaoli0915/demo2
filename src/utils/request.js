@@ -16,7 +16,8 @@ axios.interceptors.request.use(function (config) {
   // 执行请求失败
 })
 axios.defaults.transformResponse = [function (data) {
-  return JSONBig.parse(data)
+  // return JSONBig.parse(data)
+  return data ? JSONBig.parse(data) : {}
 }]
 axios.interceptors.response.use(function (response) {
   // 成功时执行

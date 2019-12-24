@@ -6,7 +6,7 @@
       <!-- slot指向title -->
     </bread-crumb>
     <el-row type="flex" justify="end">
-      <el-upload :http-request="uploadImg" :show-file-list="false">
+      <el-upload action="" :http-request="uploadImg" :show-file-list="false">
         <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
     </el-row>
@@ -25,8 +25,10 @@
               justify="space-around"
               style="font-size:20px"
             >
-              <i class="el-icon-star-on"></i>
-              <i class="el-icon-delete-solid"></i>
+            <!-- v-bind绑定  style根据绑定状态 -->
+            <!-- 收藏图标的点击事件 -->
+              <i @click="collectOrCancle(item)" :style="{color:item.is_collected?'red':''}" class="el-icon-star-on"></i>
+              <i @click="delMaterial(item.id)" class="el-icon-delete-solid"></i>
             </el-row>
           </el-card>
         </div>
@@ -88,6 +90,29 @@ export default {
     }
   },
   methods: {
+    delMaterial (id) {
+      this.$confirm('确定？').then(() => {
+        this.$axios({
+          url: `/user/images/${id}`,
+          method: 'delete'
+
+        }).then(() => {
+          this.getAllMaterial()
+        })
+      })
+    },
+    collectOrCancle (row) {
+      this.$axios({
+        url: `/user/images/${row.id}`,
+        method: 'put',
+        data: {
+          collect: !row.is_collected
+        }
+      }).then(() => {
+        this.getAllMaterial()
+      })
+    },
+
     uploadImg (params) {
       this.loading = true
       let form = new FormData()
@@ -156,6 +181,9 @@ export default {
       background-color: #ccc;
       height: 30px;
       margin-left: -20px;
+      i{
+        cursor:pointer;
+      }
     }
   }
 }
