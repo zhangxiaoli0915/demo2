@@ -62,7 +62,7 @@
       <el-col :span="14">
         <el-row type="flex">
           <!-- <img src="../../assets/img/jie.jpg" alt /> -->
-          <img :src="item.cover.images.length?item.cover.images[0]:defaultImg" alt />
+          <img :src="item.cover.images.length?item.cover.images[0]:defaultImg" alt ="">
           <div class="info">
             <!-- <span>年少轻狂，一路前行</span> -->
             <span>{{item.title}}</span>
@@ -78,7 +78,7 @@
           <span>
             <i class="el-icon-edit"></i>修改
           </span>
-          <span>
+          <span @click="delArticle(item.id)">
             <i class="el-icon-delete"></i>删除
           </span>
         </el-row>
@@ -148,9 +148,24 @@ export default {
     }
   },
   methods: {
+    delArticle (id) {
+      this.$confirm('您是否要删除这个文章？').then(() => {
+        this.$axios({
+          method: 'delete',
+          url: `/articles/${id.toString()}`
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除文章成功！'
+          })
+          this.getConditionArticle()
+        })
+      })
+    },
+    // 改变页码事件
     changePage (newPage) {
       this.page.currentPage = newPage
-      // this.getConditionArticle()
+      this.getConditionArticle()
     },
     changeCondition () {
       this.page.currentPage = 1
@@ -174,8 +189,8 @@ export default {
       this.$axios({
         url: '/channels'
       }).then(result => {
-        console.log(result)
-        this.formData.channels = result.data.channels
+        // console.log(result)
+        this.channels = result.data.channels
       })
     },
     getArticles (params) {
