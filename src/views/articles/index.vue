@@ -75,7 +75,7 @@
       </el-col>
       <el-col :span="6">
         <el-row class="right" type="flex" justify="end">
-          <span>
+          <span @click="toModify(item.id)">
             <i class="el-icon-edit"></i>修改
           </span>
           <span @click="delArticle(item.id)">
@@ -148,6 +148,11 @@ export default {
     }
   },
   methods: {
+    toModify (id) {
+      // 去修改页面
+      this.$router.push(`/home/publish/${id.toString()}`)
+    },
+
     delArticle (id) {
       this.$confirm('您是否要删除这个文章？').then(() => {
         this.$axios({

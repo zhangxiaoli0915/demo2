@@ -55,6 +55,29 @@ export default {
       }
     }
   },
+  watch: {
+    $route: function (to, from) {
+      // Object.keys(obj)
+
+      // 参数：要返回其枚举自身属性的对象
+
+      // 返回值：一个表示给定对象的所有可枚举属性的字符串数组
+      if (Object.keys(to.params).length) {
+        // 有参数为修改  没有参数为发布
+
+      } else {
+        this.formData = {
+          title: '',
+          content: '',
+          cover: {
+            type: 0,
+            images: []
+          }
+        }
+      }
+    }
+
+  },
   methods: {
     getChannels () {
       this.$axios({
