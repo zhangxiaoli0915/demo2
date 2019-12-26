@@ -8,9 +8,10 @@
         <el-input v-model="formData.title" style="width:60%"></el-input>
       </el-form-item>
       <el-form-item prop="content" label="内容">
-        <el-input v-model="formData.content" type="textarea" :rows="4"></el-input>
+        <!-- <el-input v-model="formData.content" type="textarea" :rows="4"></el-input> -->
+        <quill-editor style="height:400px" v-model="formData.content"></quill-editor>
       </el-form-item>
-      <el-form-item label="封面">
+      <el-form-item prop="type" label="封面" style="margin-top:100px">
         <el-radio-group>
           <el-radio>单图</el-radio>
           <el-radio>三图</el-radio>
@@ -90,22 +91,36 @@ export default {
     publishArticle (draft) {
       this.$refs.publishForm.validate((isOk) => {
         if (isOk) {
+          // 回去动态路由参数
+          let{ articleId } = this.$route.params
+
           // console.log('校验成功')
           this.$axios({
-            url: '/articles',
-            method: 'post',
+            // url: '/articles',
+            // method: 'post',
+            method: articleId ? 'put' : 'post',
+            url: articleId ? `/articles/${articleId}` : `/articles`,
             params: { draft }, // query参数
             data: this.formData
-          }).then(() => {
+          }).then(result => {
             // 成功了去内容列表
             this.$router.push('/home/articles')
           })
         }
       })
+    },
+    getArticleById (articleId) {
+      this.$axios({
+        url: `/articles/${articleId}`
+      }).then(result => {
+        this.formData = result.data // 将指定文章数据给data数据
+      })
     }
   },
   created () {
     this.getChannels()
+    let { articleId } = this.$route.params
+    articleId && this.getArticleById(articleId)
   }
 }
 </script>
