@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import eventBus from '../../utils/eventBus'
 export default {
   data () {
     return {
@@ -30,20 +31,36 @@ export default {
     }
   },
   created () {
-    this.$axios({
-      url: '/user/profile'
-    }).then(result => {
-      // this.userInfo = result.data.data
-      this.userInfo = result.data
+    // this.$axios({
+    //   url: '/user/profile'
+    // }).then(result => {
+    //   // this.userInfo = result.data.data
+    //   this.userInfo = result.data
+    // })
+    this.getUserInfo()
+    // 实例创建完毕，立刻监听
+    eventBus.$on('updateUserInfoSuccess', () => {
+      // 别人告诉你，它更新了数据  应该立刻处理
+      this.getUserInfo()
     })
   },
   methods: {
+    getUserInfo () {
+      this.$axios({
+        url: '/user/profile'
+      //   headers参数
+      }).then(result => {
+        this.userInfo = result.data // 获取用户个人信息
+      })
+    },
     handle (commad) {
       if (commad === 'lgout') {
         window.localStorage.removeItem('user-token')
         this.$router.push('/login')
       } else if (commad === 'git') {
         window.location.href = 'http://github.com/zhangxiaoli0915/toutiao-89'
+      } else if (commad === 'info') {
+        this.$router.push('/home/account')
       }
     }
   }
