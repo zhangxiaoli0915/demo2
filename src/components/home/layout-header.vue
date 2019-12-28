@@ -9,7 +9,7 @@
         <img :src="userInfo.photo?userInfo.photo:defaultImg" alt />
         <!-- <img src="../../assets/img/header.jpg" alt=""> -->
         <el-dropdown @command="handle">
-          <span>主页</span>
+          <span>{{userInfo.name}}</span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="info">个人信息</el-dropdown-item>
             <el-dropdown-item command="git">Git地址</el-dropdown-item>
@@ -24,14 +24,33 @@
 <script>
 import eventBus from '../../utils/eventBus'
 export default {
-  collaspse: false, // 是否折叠
+
   data () {
     return {
+      collaspse: false, // 是否折叠
       userInfo: {},
       defaultImg: require('../../assets/img/header.jpg')
     }
   },
   methods: {
+    getUserInfo () {
+      this.$axios({
+        url: '/user/profile'
+      //   headers参数
+      }).then(result => {
+        this.userInfo = result.data // 获取用户个人信息
+      })
+    },
+    handle (commad) {
+      if (commad === 'lgout') {
+        window.localStorage.removeItem('user-token')
+        this.$router.push('/login')
+      } else if (commad === 'git') {
+        window.location.href = 'http://github.com/zhangxiaoli0915/toutiao-89'
+      } else if (commad === 'info') {
+        this.$router.push('/home/account')
+      }
+    },
     collaspseOrOpen () {
       this.collaspse = !this.collaspse
       eventBus.$emit('changeCollapse') // 改变了折叠状态
@@ -50,24 +69,6 @@ export default {
       // 别人告诉你，它更新了数据  应该立刻处理
       this.getUserInfo()
     })
-  },
-  getUserInfo () {
-    this.$axios({
-      url: '/user/profile'
-      //   headers参数
-    }).then(result => {
-      this.userInfo = result.data // 获取用户个人信息
-    })
-  },
-  handle (commad) {
-    if (commad === 'lgout') {
-      window.localStorage.removeItem('user-token')
-      this.$router.push('/login')
-    } else if (commad === 'git') {
-      window.location.href = 'http://github.com/zhangxiaoli0915/toutiao-89'
-    } else if (commad === 'info') {
-      this.$router.push('/home/account')
-    }
   }
 }
 

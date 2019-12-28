@@ -5,7 +5,7 @@
       <img :src="collaspse?smallImg:bigImg" alt />
     </div>
     <!-- <el-menu router style="width:231px" background-color="#353b4e" text-color="#adafb5" active-text-color="#ffd04bl"> -->
-    <el-menu :collaspse="collaspse"
+    <el-menu :collapse="collaspse"
       router
       :style="{width:collaspse?'60px':'230px'}"
       background-color="#353b4e"
@@ -64,6 +64,10 @@ export default {
 .layout-aside {
 //   width: 230px;
   background-color: #353b4e;
+  overflow: hidden;
+  .el-menu{
+      border-right:none;
+  }
   .title {
     text-align: center;
     background-color: #2e2f32;
