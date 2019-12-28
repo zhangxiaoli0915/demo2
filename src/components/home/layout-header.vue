@@ -1,7 +1,7 @@
 <template>
   <el-row class="layout-header" type="flex" align="middle" justify="space-between">
     <el-col class="left" :span="10">
-      <i class="el-icon-s-unfold"></i>
+      <i @click="collaspseOrOpen" :class="{'el-icon-s-unfold':collaspse,'el-icon-s-fold': !collaspse}"></i>
       <span class="title">江苏传智播客教育科技股份有限公司</span>
     </el-col>
     <el-col class="right" :span="4">
@@ -24,10 +24,17 @@
 <script>
 import eventBus from '../../utils/eventBus'
 export default {
+  collaspse: false, // 是否折叠
   data () {
     return {
       userInfo: {},
       defaultImg: require('../../assets/img/header.jpg')
+    }
+  },
+  methods: {
+    collaspseOrOpen () {
+      this.collaspse = !this.collaspse
+      eventBus.$emit('changeCollapse') // 改变了折叠状态
     }
   },
   created () {
@@ -44,27 +51,26 @@ export default {
       this.getUserInfo()
     })
   },
-  methods: {
-    getUserInfo () {
-      this.$axios({
-        url: '/user/profile'
+  getUserInfo () {
+    this.$axios({
+      url: '/user/profile'
       //   headers参数
-      }).then(result => {
-        this.userInfo = result.data // 获取用户个人信息
-      })
-    },
-    handle (commad) {
-      if (commad === 'lgout') {
-        window.localStorage.removeItem('user-token')
-        this.$router.push('/login')
-      } else if (commad === 'git') {
-        window.location.href = 'http://github.com/zhangxiaoli0915/toutiao-89'
-      } else if (commad === 'info') {
-        this.$router.push('/home/account')
-      }
+    }).then(result => {
+      this.userInfo = result.data // 获取用户个人信息
+    })
+  },
+  handle (commad) {
+    if (commad === 'lgout') {
+      window.localStorage.removeItem('user-token')
+      this.$router.push('/login')
+    } else if (commad === 'git') {
+      window.location.href = 'http://github.com/zhangxiaoli0915/toutiao-89'
+    } else if (commad === 'info') {
+      this.$router.push('/home/account')
     }
   }
 }
+
 </script>
 
 <style lang="less" scoped>
