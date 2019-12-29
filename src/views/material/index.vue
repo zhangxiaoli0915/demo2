@@ -90,42 +90,46 @@ export default {
     }
   },
   methods: {
-    delMaterial (id) {
-      this.$confirm('确定？').then(() => {
-        this.$axios({
-          url: `/user/images/${id}`,
-          method: 'delete'
+    async delMaterial (id) {
+      await this.$confirm('确定要删除素材吗？')
+      //  .then(() => {
+      await this.$axios({
+        url: `/user/images/${id}`,
+        method: 'delete'
 
-        }).then(() => {
-          this.getAllMaterial()
-        })
       })
+      // .then(() => {
+      this.getAllMaterial()
+      // })
+      // })
     },
-    collectOrCancle (row) {
-      this.$axios({
+    async collectOrCancle (row) {
+      await this.$axios({
         url: `/user/images/${row.id}`,
         method: 'put',
         data: {
           collect: !row.is_collected
         }
-      }).then(() => {
-        this.getAllMaterial()
       })
+      // .then(() => {
+      this.getAllMaterial()
+      // })
     },
 
-    uploadImg (params) {
+    async uploadImg (params) {
       this.loading = true
       let form = new FormData()
       form.append('image', params.file)
-      this.axios({
+      await this.axios({
         method: 'post',
         url: '/user/images',
         data: form
-      }).then(result => {
-        //   说明已经上传成功了一张图片
-        this.loading = false // 关闭进度条
-        this.getAllMaterial()
       })
+      // .then(result => {
+      //   说明已经上传成功了一张图片
+      this.loading = false // 关闭进度条
+      this.getAllMaterial()
+      // })
     },
     changePage (newPage) {
       this.page.currentPage = newPage
@@ -139,8 +143,8 @@ export default {
     //   this.activeName = 'all'
     // }
     // 获取所有素材
-    getAllMaterial () {
-      this.$axios({
+    async getAllMaterial () {
+      let result = await this.$axios({
         url: '/user/images',
         // params: { collect: false }
         params: {
@@ -148,10 +152,11 @@ export default {
           page: this.page.currentPage,
           per_page: this.page.pageSize
         }
-      }).then(result => {
-        this.list = result.data.results
-        this.page.total = result.data.total_count
       })
+      // .then(result => {
+      this.list = result.data.results
+      this.page.total = result.data.total_count
+      // })
     }
   },
   created () {
