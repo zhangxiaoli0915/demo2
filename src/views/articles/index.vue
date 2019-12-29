@@ -96,8 +96,8 @@
     </el-row>
   </el-card>
 </template>
-
 <script>
+import { getArticles, getChannels } from '../../actions/articles'
 export default {
   data () {
     return {
@@ -194,18 +194,22 @@ export default {
       this.getArticles(params)
     },
     async getChannels () {
-      let result = await this.$axios({
-        url: '/channels'
-      })
+      // let result = await this.$axios({
+      //   url: '/channels'
+      // })
+      // 调用频道数据
+      let result = await getChannels()
       // .then(result => {
       // console.log(result)
       this.channels = result.data.channels
     },
     async getArticles (params) {
-      let result = await this.$axios({
-        url: '/articles',
-        params
-      })
+      // let result = await this.$axios({
+      //   url: '/articles',
+      //   params
+      // })
+      // 获取文章列表数据 分页 切换/条件切换
+      let result = await getArticles(params)
       // .then(result => {
       this.list = result.data.results
       this.page.total = result.data.total_count // 文章总数
