@@ -91,15 +91,20 @@ export default {
   },
   methods: {
     async delMaterial (id) {
-      await this.$confirm('确定要删除素材吗？')
-      //  .then(() => {
-      await this.$axios({
-        url: `/user/images/${id}`,
-        method: 'delete'
+      try {
+        await this.$confirm('确定要删除素材吗？')
+        //  .then(() => {
+        await this.$axios({
+          url: `/user/images/${id}`,
+          method: 'delete'
 
-      })
-      // .then(() => {
-      this.getAllMaterial()
+        })
+        // .then(() => {
+        this.getAllMaterial()
+      } catch (error) {
+
+      }
+
       // })
       // })
     },
